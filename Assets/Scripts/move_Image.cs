@@ -3,8 +3,8 @@ using UnityEngine.EventSystems;
 
 public class ImagePanZoom : MonoBehaviour, IDragHandler, IScrollHandler
 {
-    public RectTransform imageRect; // el RectTransform del RawImage
-    public bool panModeEnabled = false; // controlado por tu botón lateral
+    public RectTransform imageRect;
+    public bool panModeEnabled = false;
 
     public float zoomSpeed = 0.1f;
     public float minZoom = 1f;
@@ -21,7 +21,7 @@ public class ImagePanZoom : MonoBehaviour, IDragHandler, IScrollHandler
     {
         if (!panModeEnabled) return;
 
-        // Mueve la imagen según el arrastre del mouse
+        //Mueve la imagen al arrastrar el mouse
         imageRect.anchoredPosition += eventData.delta;
 
         ClampPosition();
@@ -29,7 +29,7 @@ public class ImagePanZoom : MonoBehaviour, IDragHandler, IScrollHandler
 
     public void OnScroll(PointerEventData eventData)
     {
-        // El zoom puede funcionar siempre, sin necesidad del modo pan
+   
         float scrollDelta = eventData.scrollDelta.y;
         currentZoom = Mathf.Clamp(currentZoom + scrollDelta * zoomSpeed, minZoom, maxZoom);
 
@@ -40,7 +40,7 @@ public class ImagePanZoom : MonoBehaviour, IDragHandler, IScrollHandler
 
     void ClampPosition()
     {
-        // Evita que arrastres la imagen tan lejos que quede un hueco vacío en el viewport
+        //Evita que arrastres la imagen tan lejos que quede un hueco vacío en el viewport
         RectTransform viewport = imageRect.parent as RectTransform;
 
         float maxX = (imageRect.rect.width * currentZoom - viewport.rect.width) / 2f;
