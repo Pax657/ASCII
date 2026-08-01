@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ImagePanZoom : MonoBehaviour, IDragHandler, IScrollHandler
+public class move_Image : MonoBehaviour, IDragHandler, IScrollHandler
 {
     public RectTransform imageRect;
     public bool panModeEnabled = false;

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using SFB;
 
-public class ImageLoader : MonoBehaviour
+public class Upload_Image : MonoBehaviour
 {
     public RawImage image;
     public AspectRatioFitter aspectFitter;
@@ -30,13 +30,32 @@ public class ImageLoader : MonoBehaviour
         {
             image.texture = texture;
 
-            // Calcula la proporción real de la imagen y se la pasa al fitter
             float ratio = (float)texture.width / texture.height;
             aspectFitter.aspectRatio = ratio;
+
+            //Prueba rápida: grilla de 40x25
+            CellData[,] luminance = luminancia.Sample(texture, 40, 25);
+
+            //Debug simple: imprime la grilla como números redondeados
+            PrintLuminanceGrid(luminance, 40, 25);
         }
-        else
+    }
+
+    void PrintLuminanceGrid(CellData[,] grid, int columns, int rows)
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        for (int row = 0; row < rows; row++)
         {
-            Debug.LogError("No se pudo cargar la imagen: " + path);
+            for (int col = 0; col < columns; col++)
+            {
+                CellData cell = grid[col, row];
+                sb.Append(cell.luminance.ToString("F1"))
+                  .Append("/")
+                  .Append(cell.alpha.ToString("F1"))
+                  .Append(" ");
+            }
+            sb.Append("\n");
         }
+        Debug.Log(sb.ToString());
     }
 }
