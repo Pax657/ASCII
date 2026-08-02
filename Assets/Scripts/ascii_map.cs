@@ -5,7 +5,7 @@ public static class ascii_map
     //Tabla de densidad: el primer carácter es "más denso" (oscuro), el último "menos denso" (claro)
     private const string DensityTable = "@%#*+=-:. ";
 
-    public static char[,] MapToAscii(CellData[,] grid, int columns, int rows, float alphaThreshold = 0.15f)
+    public static char[,] MapToAscii(CellData[,] grid, int columns, int rows, float intensity, float alphaThreshold = 0.15f)
     {
         char[,] result = new char[columns, rows];
 
@@ -22,7 +22,9 @@ public static class ascii_map
                     continue;
                 }
 
-                result[col, row] = GetCharacterForLuminance(cell.luminance);
+
+                float adjustedLuminance = ApplyIntensity(cell.luminance, intensity);
+                result[col, row] = GetCharacterForLuminance(adjustedLuminance);
             }
         }
 
@@ -53,5 +55,13 @@ public static class ascii_map
 
             return (columns, rows);
         }
+    }
+
+    public static float ApplyIntensity(float luminance, float intensity)
+    {
+        // intensity = 1.0 → sin cambio
+        // intensity > 1.0 → más contraste (los oscuros se oscurecen más, los claros se aclaran más)
+        // intensity < 1.0 → menos contraste (todo tiende al gris medio)
+        return Mathf.Pow(luminance, intensity);
     }
 }

@@ -9,6 +9,11 @@ public class Upload_Image : MonoBehaviour
     public AspectRatioFitter aspectFitter;
     public ascii_Renderer asciiRenderer;
 
+    private CellData[,] currentGrid;
+    private int currentColumns;
+    private int currentRows;
+    private float currentIntensity = 1f;
+
     public void OpenExplorer()
     {
         var extensions = new[] {
@@ -25,6 +30,11 @@ public class Upload_Image : MonoBehaviour
 
     void LoadImage(string path)
     {
+        if(image.texture != null) // Liberar la textura anterior si existe
+        {
+            Destroy(image.texture);
+        }
+
         byte[] fileData = System.IO.File.ReadAllBytes(path);
         Texture2D texture = new Texture2D(2, 2);
 
@@ -37,19 +47,23 @@ public class Upload_Image : MonoBehaviour
 
             var (columns, rows) = GridSizeCalculator.CalculateGridSize(texture, 80);
 
+            currentGrid = luminancia.Sample(texture, columns, rows);
+            currentColumns = columns;
+            currentRows = rows;
+
             //Prueba rápida: grilla de 120x90
-            CellData[,] grid = luminancia.Sample(texture, columns, rows);
+            //CellData[,] grid = luminancia.Sample(texture, columns, rows);
 
             //Debug simple: imprime la grilla como números redondeados
-            PrintLuminanceGrid(grid, columns, rows);
+            //PrintLuminanceGrid(currentGrid, currentColumns, currentRows);
 
             //Mapeamos la grilla a caracteres ASCII
-            char[,] asciiGrid = ascii_map.MapToAscii(grid, columns, rows);
+            char[,] asciiGrid = ascii_map.MapToAscii(currentGrid, currentColumns, currentRows, currentIntensity);
 
             //Debug simple: imprime la grilla ASCII
-            PrintAsciiGrid(asciiGrid, columns, rows);
+            //PrintAsciiGrid(asciiGrid, currentColumns, currentRows);
 
-            asciiRenderer.Render(asciiGrid, columns, rows);
+            asciiRenderer.Render(asciiGrid, currentColumns, currentRows);
         }
     }
 
@@ -83,5 +97,12 @@ public class Upload_Image : MonoBehaviour
             sb.Append("\n");
         }
         Debug.Log(sb.ToString());
+    }
+
+    public void RecalculateAscii(float intensity)
+    {
+        currentIntensity = intensity;
+        char[,] asciiGrid = ascii_map.MapToAscii(currentGrid, currentColumns, currentRows, currentIntensity, 0.15f);
+        asciiRenderer.Render(asciiGrid, currentColumns, currentRows);
     }
 }
