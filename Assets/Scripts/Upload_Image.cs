@@ -33,11 +33,17 @@ public class Upload_Image : MonoBehaviour
             float ratio = (float)texture.width / texture.height;
             aspectFitter.aspectRatio = ratio;
 
-            //Prueba rápida: grilla de 40x25
-            CellData[,] luminance = luminancia.Sample(texture, 40, 25);
+            //Prueba rápida: grilla de 120x90
+            CellData[,] grid = luminancia.Sample(texture, 120, 90);
 
             //Debug simple: imprime la grilla como números redondeados
-            PrintLuminanceGrid(luminance, 40, 25);
+            PrintLuminanceGrid(grid, 120, 90);
+
+            //Mapeamos la grilla a caracteres ASCII
+            char[,] asciiGrid = ascii_map.MapToAscii(grid, 120, 90);
+
+            //Debug simple: imprime la grilla ASCII
+            PrintAsciiGrid(asciiGrid, 120, 90);
         }
     }
 
@@ -53,6 +59,20 @@ public class Upload_Image : MonoBehaviour
                   .Append("/")
                   .Append(cell.alpha.ToString("F1"))
                   .Append(" ");
+            }
+            sb.Append("\n");
+        }
+        Debug.Log(sb.ToString());
+    }
+
+    void PrintAsciiGrid(char[,] grid, int columns, int rows)
+    {
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+        for (int row = 0; row < rows; row++)
+        {
+            for (int col = 0; col < columns; col++)
+            {
+                sb.Append(grid[col, row]);
             }
             sb.Append("\n");
         }

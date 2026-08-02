@@ -25,8 +25,13 @@ public static class luminancia
             {
                 int startX = Mathf.FloorToInt(col * cellWidth); //coordenadas de la celda
                 int endX = Mathf.FloorToInt((col + 1) * cellWidth);
-                int startY = Mathf.FloorToInt(row * cellHeight);
-                int endY = Mathf.FloorToInt((row + 1) * cellHeight);
+                //int startY = Mathf.FloorToInt(row * cellHeight);
+                //int endY = Mathf.FloorToInt((row + 1) * cellHeight);
+
+                //invertimos verticalmnete para que la imagen salga correctamente en la consola (0,0 es abajo a la izquierda)
+                int flippedRow = rows - 1 - row;
+                int startY = Mathf.FloorToInt(flippedRow * cellHeight);
+                int endY = Mathf.FloorToInt((flippedRow + 1) * cellHeight);
 
                 float sumLum = 0f;
                 float sumAlpha = 0f;
