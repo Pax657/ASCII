@@ -34,7 +34,7 @@ public static class ascii_map
         //luminance va de 0.0 (oscuro) a 1.0 (claro)
         //Invertimos el índice porque el primer carácter de la tabla es el más "denso" (oscuro)
         int index = Mathf.RoundToInt(luminance * (DensityTable.Length - 1));
-        //index = DensityTable.Length - 1 - index; // invierte: luminancia baja -> carácter denso
+        //index = DensityTable.Length - 1 - index; //invierte: luminancia baja -> carácter denso
 
         return DensityTable[index];
     }
