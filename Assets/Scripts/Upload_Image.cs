@@ -7,6 +7,7 @@ public class Upload_Image : MonoBehaviour
 {
     public RawImage image;
     public AspectRatioFitter aspectFitter;
+    public ascii_Renderer asciiRenderer;
 
     public void OpenExplorer()
     {
@@ -48,7 +49,7 @@ public class Upload_Image : MonoBehaviour
             //Debug simple: imprime la grilla ASCII
             PrintAsciiGrid(asciiGrid, columns, rows);
 
-            
+            asciiRenderer.Render(asciiGrid, columns, rows);
         }
     }
 
