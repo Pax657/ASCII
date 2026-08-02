@@ -47,6 +47,8 @@ public class Upload_Image : MonoBehaviour
 
             //Debug simple: imprime la grilla ASCII
             PrintAsciiGrid(asciiGrid, columns, rows);
+
+            
         }
     }
 
