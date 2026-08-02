@@ -41,7 +41,7 @@ public static class ascii_map
 
     public static class GridSizeCalculator
     {
-        // Proporción típica alto/ancho de un carácter monoespaciado (ajustable según la fuente que uses)
+        //Proporción típica alto/ancho de un carácter monoespaciado (ajustable según la fuente que uses)
         private const float CharacterAspectRatio = 2.0f;
 
         public static (int columns, int rows) CalculateGridSize(Texture2D texture, int desiredColumns)
