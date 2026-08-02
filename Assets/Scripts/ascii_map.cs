@@ -34,8 +34,24 @@ public static class ascii_map
         //luminance va de 0.0 (oscuro) a 1.0 (claro)
         //Invertimos el índice porque el primer carácter de la tabla es el más "denso" (oscuro)
         int index = Mathf.RoundToInt(luminance * (DensityTable.Length - 1));
-        index = DensityTable.Length - 1 - index; // invierte: luminancia baja -> carácter denso
+        //index = DensityTable.Length - 1 - index; // invierte: luminancia baja -> carácter denso
 
         return DensityTable[index];
+    }
+
+    public static class GridSizeCalculator
+    {
+        // Proporción típica alto/ancho de un carácter monoespaciado (ajustable según la fuente que uses)
+        private const float CharacterAspectRatio = 2.0f;
+
+        public static (int columns, int rows) CalculateGridSize(Texture2D texture, int desiredColumns)
+        {
+            float imageAspect = (float)texture.width / texture.height;
+
+            int columns = desiredColumns;
+            int rows = Mathf.RoundToInt(columns / imageAspect / CharacterAspectRatio);
+
+            return (columns, rows);
+        }
     }
 }

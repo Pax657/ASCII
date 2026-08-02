@@ -1,6 +1,7 @@
+using SFB;
 using UnityEngine;
 using UnityEngine.UI;
-using SFB;
+using static ascii_map;
 
 public class Upload_Image : MonoBehaviour
 {
@@ -33,17 +34,19 @@ public class Upload_Image : MonoBehaviour
             float ratio = (float)texture.width / texture.height;
             aspectFitter.aspectRatio = ratio;
 
+            var (columns, rows) = GridSizeCalculator.CalculateGridSize(texture, 80);
+
             //Prueba rápida: grilla de 120x90
-            CellData[,] grid = luminancia.Sample(texture, 120, 90);
+            CellData[,] grid = luminancia.Sample(texture, columns, rows);
 
             //Debug simple: imprime la grilla como números redondeados
-            PrintLuminanceGrid(grid, 120, 90);
+            PrintLuminanceGrid(grid, columns, rows);
 
             //Mapeamos la grilla a caracteres ASCII
-            char[,] asciiGrid = ascii_map.MapToAscii(grid, 120, 90);
+            char[,] asciiGrid = ascii_map.MapToAscii(grid, columns, rows);
 
             //Debug simple: imprime la grilla ASCII
-            PrintAsciiGrid(asciiGrid, 120, 90);
+            PrintAsciiGrid(asciiGrid, columns, rows);
         }
     }
 
