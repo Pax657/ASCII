@@ -1,1 +1,5 @@
-*.shader linguist-detectable=false
+*.shader linguist-generated=true
+*.hlsl linguist-generated=true
+*.cginc linguist-generated=true
+*.compute linguist-generated=true
+*.js linguist-generated=true
