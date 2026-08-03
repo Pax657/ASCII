@@ -3,9 +3,9 @@ using UnityEngine;
 public static class ascii_map
 {
     //Tabla de densidad: el primer carácter es "más denso" (oscuro), el último "menos denso" (claro)
-    private const string DensityTable = "@%#*+=-:. ";
+    //private const string DensityTable = "@%#*+=-:. ";
 
-    public static char[,] MapToAscii(CellData[,] grid, int columns, int rows, float intensity, float alphaThreshold = 0.15f)
+    public static char[,] MapToAscii(CellData[,] grid, int columns, int rows, float intensity, string densityTable, float alphaThreshold = 0.15f)
     {
         char[,] result = new char[columns, rows];
 
@@ -24,21 +24,21 @@ public static class ascii_map
 
 
                 float adjustedLuminance = ApplyIntensity(cell.luminance, intensity);
-                result[col, row] = GetCharacterForLuminance(adjustedLuminance);
+                result[col, row] = GetCharacterForLuminance(adjustedLuminance, densityTable);
             }
         }
 
         return result;
     }
 
-    private static char GetCharacterForLuminance(float luminance)
+    private static char GetCharacterForLuminance(float luminance, string densityTable)
     {
         //luminance va de 0.0 (oscuro) a 1.0 (claro)
         //Invertimos el índice porque el primer carácter de la tabla es el más "denso" (oscuro)
-        int index = Mathf.RoundToInt(luminance * (DensityTable.Length - 1));
-        //index = DensityTable.Length - 1 - index; //invierte: luminancia baja -> carácter denso
+        int index = Mathf.RoundToInt(luminance * (densityTable.Length - 1));
+        //index = densityTable.Length - 1 - index; //invierte: luminancia baja -> carácter denso
 
-        return DensityTable[index];
+        return densityTable[index];
     }
 
     public static class GridSizeCalculator
@@ -59,9 +59,11 @@ public static class ascii_map
 
     public static float ApplyIntensity(float luminance, float intensity)
     {
-        // intensity = 1.0 → sin cambio
-        // intensity > 1.0 → más contraste (los oscuros se oscurecen más, los claros se aclaran más)
-        // intensity < 1.0 → menos contraste (todo tiende al gris medio)
+        //intensity = 1.0 → sin cambio
+        //intensity > 1.0 → más contraste (los oscuros se oscurecen más, los claros se aclaran más)
+        //intensity < 1.0 → menos contraste (todo tiende al gris medio)
         return Mathf.Pow(luminance, intensity);
     }
+
+
 }

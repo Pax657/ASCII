@@ -9,6 +9,8 @@ public class Upload_Image : MonoBehaviour
     public AspectRatioFitter aspectFitter;
     public ascii_Renderer asciiRenderer;
 
+    public string currentDensityTable = "@%#*+=-:. ";
+
     //valores privados necesarios para cambiar datos sin tener que volver a cargar la imagen
     private Texture2D currentTexture;
     private CellData[,] currentGrid;
@@ -32,7 +34,7 @@ public class Upload_Image : MonoBehaviour
 
     void LoadImage(string path)
     {
-        if(image.texture != null) // Liberar la textura anterior si existe
+        if(image.texture != null) //Liberar la textura anterior si existe
         {
             Destroy(image.texture);
         }
@@ -62,7 +64,7 @@ public class Upload_Image : MonoBehaviour
             //PrintLuminanceGrid(currentGrid, currentColumns, currentRows);
 
             //Mapeamos la grilla a caracteres ASCII
-            char[,] asciiGrid = ascii_map.MapToAscii(currentGrid, currentColumns, currentRows, currentIntensity);
+            char[,] asciiGrid = ascii_map.MapToAscii(currentGrid, currentColumns, currentRows, currentIntensity, currentDensityTable);
 
             //Debug simple: imprime la grilla ASCII
             //PrintAsciiGrid(asciiGrid, currentColumns, currentRows);
@@ -106,7 +108,7 @@ public class Upload_Image : MonoBehaviour
     public void RecalculateAscii(float intensity)
     {
         currentIntensity = intensity;
-        char[,] asciiGrid = ascii_map.MapToAscii(currentGrid, currentColumns, currentRows, currentIntensity, 0.15f);
+        char[,] asciiGrid = ascii_map.MapToAscii(currentGrid, currentColumns, currentRows, currentIntensity, currentDensityTable, 0.15f);
         asciiRenderer.Render(asciiGrid, currentColumns, currentRows);
     }
 
@@ -123,5 +125,18 @@ public class Upload_Image : MonoBehaviour
             
             RecalculateAscii(currentIntensity); //Recalcular ASCII con la intensidad actual
         }
-    } 
+    }
+
+    public void OnCharsetChanged(string newTable)
+    {
+        currentDensityTable = newTable;
+        RecalculateAscii(currentIntensity); //Recalcular ASCII con la intensidad actual y la nueva tabla de densidad
+    }
+
+    /*
+        public void RecalculatedThreshold(float threshold)
+        {
+
+        }
+    */
 }

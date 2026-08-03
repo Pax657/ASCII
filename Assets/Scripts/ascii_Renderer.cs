@@ -5,7 +5,7 @@ public class ascii_Renderer : MonoBehaviour
 {
     public TextMeshProUGUI displayText;
 
-    //Queremos pasar deñ char[,] a string para mostrarlo en el cuadro de texto. Esto es un método auxiliar para convertir la grilla ASCII a un string.
+    //Queremos pasar de char[,] a string para mostrarlo en el cuadro de texto. Esto es un método auxiliar para convertir la grilla ASCII a un string.
     public void Render(char[,] asciiGrid, int columns, int rows)
     {
         //stringbuilder sirve para construir strings de manera eficiente, especialmente cuando se concatenan muchas partes
