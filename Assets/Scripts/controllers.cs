@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 public class controllers : MonoBehaviour
 {
@@ -40,11 +41,22 @@ public class controllers : MonoBehaviour
     public TextMeshProUGUI asciiDisplay;
     public List<TMP_FontAsset> availableFonts;
 
-    [Header("Debounce")] //Sirve para evitar que se recalculen los valores de la imagen cada vez que se mueve el slider, sino que espera un tiempo para hacerlo
+    [Header("Debounce")] //Permite mejorar el rendimiento al evitar recalcular la imagen demasiadas veces mientras se mueve el slider.
+                         //Espera antes de aplicar el recalculo
     public float debounceDelay = 0.15f; //Tiempo de espera en segundos antes de aplicar los cambios
+    //Resolución
     private bool hasPendingResolutionChange;
     private float pendingResolutionValue; //Valor pendiente de resolución para aplicar después del retraso
     private float resolutionDebounceTimer;
+    //Densidad
+    private bool hasPendingDensityChange;
+    private float pendingDensityValue;
+    private float densityDebounceTimer;
+    //Intensidad
+    public float intensityDebounceDelay = 0.05f;
+    private bool hasPendingIntensityChange;
+    private float pendingIntensityValue;
+    private float intensityDebounceTimer;
 
     void Start()
     {
@@ -79,12 +91,35 @@ public class controllers : MonoBehaviour
                 hasPendingResolutionChange = false;
             }
         }
+
+        if (hasPendingDensityChange)
+        {
+            densityDebounceTimer -= Time.deltaTime;
+            if (densityDebounceTimer <= 0f)
+            {
+                imageLoader.OnDensityLevelsChanged((int)pendingDensityValue);
+                hasPendingDensityChange = false;
+            }
+        }
+
+        if (hasPendingIntensityChange)
+        {
+            intensityDebounceTimer -= Time.deltaTime;
+            if (intensityDebounceTimer <= 0f)
+            {
+                imageLoader.RecalculateAscii(pendingIntensityValue);
+                hasPendingIntensityChange = false;
+            }
+        }
     }
 
     void OnIntensityChanged(float value)
     {
         intensityValueText.text = $"Iluminación: {value:F2}";
-        imageLoader.RecalculateAscii(value);
+
+        pendingIntensityValue = value;
+        hasPendingIntensityChange = true;
+        intensityDebounceTimer = intensityDebounceDelay;
     }
 
     void OnResolutionChanged(float value)
@@ -119,7 +154,10 @@ public class controllers : MonoBehaviour
     {
         int levels = Mathf.RoundToInt(value);
         densityValueText.text = $"Escala de Gris: {levels}";
-        imageLoader.OnDensityLevelsChanged(levels);
+
+        pendingDensityValue = levels;
+        hasPendingDensityChange = true;
+        densityDebounceTimer = debounceDelay;
     }
 
     /*
