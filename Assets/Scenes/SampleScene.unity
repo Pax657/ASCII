@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 94059335}
   - component: {fileID: 94059334}
   m_Layer: 5
-  m_Name: IntensidadTxt
+  m_Name: IluminacionTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1093,12 +1093,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19be306c93087224c9fa5fa046524ed7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::controllers
-  intensitySlider: {fileID: 1572114632}
+  iluminacionSlider: {fileID: 1572114632}
   resolutionSlider: {fileID: 1745315451}
   densitySlider: {fileID: 216848679}
   charsetDropdown: {fileID: 887435190}
   fontDropdown: {fileID: 2053869758}
-  intensityValueText: {fileID: 94059334}
+  iluminacionValueText: {fileID: 94059334}
   resolutionValueText: {fileID: 756528504}
   densityValueText: {fileID: 769906284}
   imageLoader: {fileID: 1089647338}
@@ -1117,6 +1117,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3f8d095e56c3fda4ca9f55ff04bded9c, type: 2}
   - {fileID: 11400000, guid: c589579c7ea8ed84599414d1c9be8bfe, type: 2}
   debounceDelay: 0.15
+  iluminacionDebounceDelay: 0.05
 --- !u!4 &311226973
 Transform:
   m_ObjectHideFlags: 0
@@ -4786,7 +4787,7 @@ GameObject:
   - component: {fileID: 1572114631}
   - component: {fileID: 1572114632}
   m_Layer: 5
-  m_Name: Intensidad
+  m_Name: "Iluminaci\xF3n"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

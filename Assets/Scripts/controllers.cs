@@ -44,22 +44,19 @@ public class controllers : MonoBehaviour
     [Header("Debounce")] //Permite mejorar el rendimiento al evitar recalcular la imagen demasiadas veces mientras se mueve el slider.
                          //Espera antes de aplicar el recalculo
     public float debounceDelay = 0.15f; //Tiempo de espera en segundos antes de aplicar los cambios
-    //Resolución
-    private bool hasPendingResolutionChange;
-    private float pendingResolutionValue; //Valor pendiente de resolución para aplicar después del retraso
-    private float resolutionDebounceTimer;
-    //Densidad
-    private bool hasPendingDensityChange;
-    private float pendingDensityValue;
-    private float densityDebounceTimer;
-    //Intensidad
     public float iluminacionDebounceDelay = 0.05f;
-    private bool hasPendingIluminacionChange;
-    private float pendingIluminacionValue;
-    private float iluminacionDebounceTimer;
+
+    //Variables privadas para manejar el debounce
+    private debouncedValue<float> iluminacionDebounced;
+    private debouncedValue<int> densityDebounce;
+    private debouncedValue<int> resolutionDebounce;
 
     void Start()
     {
+        resolutionDebounce = new debouncedValue<int>(debounceDelay, value => imageLoader.RecalculateGrid((int)value));
+        densityDebounce = new debouncedValue<int>(debounceDelay, value => imageLoader.OnDensityLevelsChanged(value));
+        iluminacionDebounced = new debouncedValue<float>(iluminacionDebounceDelay, value => imageLoader.RecalculateAscii(value));
+
         iluminacionSlider.onValueChanged.AddListener(OnIluminacionChanged);
         resolutionSlider.onValueChanged.AddListener(OnResolutionChanged);
         densitySlider.onValueChanged.AddListener(onDensityChanged);
@@ -82,53 +79,29 @@ public class controllers : MonoBehaviour
 
     private void Update()
     {
-        if (hasPendingResolutionChange) //Si tiene un cambio pendiente, espera antes de aplicarlo
-        {
-            resolutionDebounceTimer -= Time.deltaTime;
-            if(resolutionDebounceTimer <= 0) //Cuando se cumple el tiempo de espera, se aplica el cambio de resolución
-            {
-                imageLoader.RecalculateGrid((int)pendingResolutionValue); //Aplica el cambio pendiente de resolución
-                hasPendingResolutionChange = false;
-            }
-        }
+        resolutionDebounce.Tick(Time.deltaTime);
+        densityDebounce.Tick(Time.deltaTime);
+        iluminacionDebounced.Tick(Time.deltaTime);
 
-        if (hasPendingDensityChange)
-        {
-            densityDebounceTimer -= Time.deltaTime;
-            if (densityDebounceTimer <= 0f)
-            {
-                imageLoader.OnDensityLevelsChanged((int)pendingDensityValue);
-                hasPendingDensityChange = false;
-            }
-        }
-
-        if (hasPendingIluminacionChange)
-        {
-            iluminacionDebounceTimer -= Time.deltaTime;
-            if (iluminacionDebounceTimer <= 0f)
-            {
-                imageLoader.RecalculateAscii(pendingIluminacionValue);
-                hasPendingIluminacionChange = false;
-            }
-        }
     }
 
     void OnIluminacionChanged(float value)
     {
         iluminacionValueText.text = $"Iluminación: {value:F2}";
-
-        pendingIluminacionValue = value;
-        hasPendingIluminacionChange = true;
-        iluminacionDebounceTimer = iluminacionDebounceDelay;
+        iluminacionDebounced.SetValue(value);
     }
 
     void OnResolutionChanged(float value)
     {
         resolutionValueText.text = $"Resolución: {(int)value} px";
+        resolutionDebounce.SetValue((int)value);
+    }
 
-        pendingResolutionValue = value; //Almacena el valor pendiente de resolución
-        hasPendingResolutionChange = true;
-        resolutionDebounceTimer = debounceDelay; //Reinicia el temporizador de debounce
+    void onDensityChanged(float value)
+    {
+        int levels = Mathf.RoundToInt(value);
+        densityValueText.text = $"Escala de Gris: {levels}";
+        densityDebounce.SetValue(levels);
     }
 
     void OnASCIIChanged(int index)
@@ -136,7 +109,7 @@ public class controllers : MonoBehaviour
         string newTable = charsets[index].densityTable;
         imageLoader.OnCharsetChanged(newTable);
 
-        // Ajusta el rango del slider de niveles según el charset elegido
+        //Ajusta el rango del slider de niveles según el charset elegido
         densitySlider.maxValue = newTable.Length;
 
         if (densitySlider.value > newTable.Length)
@@ -148,16 +121,6 @@ public class controllers : MonoBehaviour
     void OnFontChanged(int index)
     {
         asciiDisplay.font = availableFonts[index];
-    }
-
-    void onDensityChanged(float value)
-    {
-        int levels = Mathf.RoundToInt(value);
-        densityValueText.text = $"Escala de Gris: {levels}";
-
-        pendingDensityValue = levels;
-        hasPendingDensityChange = true;
-        densityDebounceTimer = debounceDelay;
     }
 
     /*
