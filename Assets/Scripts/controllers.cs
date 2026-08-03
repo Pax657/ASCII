@@ -7,7 +7,7 @@ using static UnityEngine.Rendering.DebugUI;
 public class controllers : MonoBehaviour
 {
     [Header("Sliders")]
-    public Slider intensitySlider;
+    public Slider iluminacionSlider;
     public Slider resolutionSlider;
     public Slider densitySlider;
     //public Slider thresholdSlider;
@@ -18,7 +18,7 @@ public class controllers : MonoBehaviour
 
     [Space(10)]
     [Header("Textos")]
-    public TextMeshProUGUI intensityValueText;
+    public TextMeshProUGUI iluminacionValueText;
     public TextMeshProUGUI resolutionValueText;
     public TextMeshProUGUI densityValueText;
     //public TextMeshProUGUI thresholdValueText;
@@ -53,14 +53,14 @@ public class controllers : MonoBehaviour
     private float pendingDensityValue;
     private float densityDebounceTimer;
     //Intensidad
-    public float intensityDebounceDelay = 0.05f;
-    private bool hasPendingIntensityChange;
-    private float pendingIntensityValue;
-    private float intensityDebounceTimer;
+    public float iluminacionDebounceDelay = 0.05f;
+    private bool hasPendingIluminacionChange;
+    private float pendingIluminacionValue;
+    private float iluminacionDebounceTimer;
 
     void Start()
     {
-        intensitySlider.onValueChanged.AddListener(OnIntensityChanged);
+        iluminacionSlider.onValueChanged.AddListener(OnIluminacionChanged);
         resolutionSlider.onValueChanged.AddListener(OnResolutionChanged);
         densitySlider.onValueChanged.AddListener(onDensityChanged);
         //thresholdSlider.onValueChanged.AddListener(OnThresholdChanged);
@@ -102,24 +102,24 @@ public class controllers : MonoBehaviour
             }
         }
 
-        if (hasPendingIntensityChange)
+        if (hasPendingIluminacionChange)
         {
-            intensityDebounceTimer -= Time.deltaTime;
-            if (intensityDebounceTimer <= 0f)
+            iluminacionDebounceTimer -= Time.deltaTime;
+            if (iluminacionDebounceTimer <= 0f)
             {
-                imageLoader.RecalculateAscii(pendingIntensityValue);
-                hasPendingIntensityChange = false;
+                imageLoader.RecalculateAscii(pendingIluminacionValue);
+                hasPendingIluminacionChange = false;
             }
         }
     }
 
-    void OnIntensityChanged(float value)
+    void OnIluminacionChanged(float value)
     {
-        intensityValueText.text = $"Iluminación: {value:F2}";
+        iluminacionValueText.text = $"Iluminación: {value:F2}";
 
-        pendingIntensityValue = value;
-        hasPendingIntensityChange = true;
-        intensityDebounceTimer = intensityDebounceDelay;
+        pendingIluminacionValue = value;
+        hasPendingIluminacionChange = true;
+        iluminacionDebounceTimer = iluminacionDebounceDelay;
     }
 
     void OnResolutionChanged(float value)
