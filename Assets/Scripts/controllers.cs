@@ -53,6 +53,7 @@ public class controllers : MonoBehaviour
 
     void Start()
     {
+        //Inicializar los debouncedValue con los valores iniciales de los sliders
         resolutionDebounce = new debouncedValue<int>(debounceDelay, value => imageLoader.RecalculateGrid((int)value));
         densityDebounce = new debouncedValue<int>(debounceDelay, value => imageLoader.OnDensityLevelsChanged(value));
         iluminacionDebounced = new debouncedValue<float>(iluminacionDebounceDelay, value => imageLoader.RecalculateAscii(value));
