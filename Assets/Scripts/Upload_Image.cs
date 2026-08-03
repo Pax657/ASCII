@@ -9,6 +9,8 @@ public class Upload_Image : MonoBehaviour
     public AspectRatioFitter aspectFitter;
     public ascii_Renderer asciiRenderer;
 
+    //valores privados necesarios para cambiar datos sin tener que volver a cargar la imagen
+    private Texture2D currentTexture;
     private CellData[,] currentGrid;
     private int currentColumns;
     private int currentRows;
@@ -41,9 +43,11 @@ public class Upload_Image : MonoBehaviour
         if (texture.LoadImage(fileData))
         {
             image.texture = texture;
+            currentTexture = texture;
 
             float ratio = (float)texture.width / texture.height;
             aspectFitter.aspectRatio = ratio;
+            RecalculateGrid(80);
 
             var (columns, rows) = GridSizeCalculator.CalculateGridSize(texture, 80);
 
@@ -105,4 +109,19 @@ public class Upload_Image : MonoBehaviour
         char[,] asciiGrid = ascii_map.MapToAscii(currentGrid, currentColumns, currentRows, currentIntensity, 0.15f);
         asciiRenderer.Render(asciiGrid, currentColumns, currentRows);
     }
+
+    public void RecalculateGrid(int columns)
+    {
+        //Recalcular la grilla y el ASCII solo si hay una textura cargada
+        if (currentTexture != null)
+        {
+            //Calcular el nuevo tamaño de la grilla basado en la nueva cantidad de columnas
+            var (newColumns, newRows) = GridSizeCalculator.CalculateGridSize(currentTexture, columns);
+            currentGrid = luminancia.Sample(currentTexture, newColumns, newRows);
+            currentColumns = newColumns;
+            currentRows = newRows;
+            
+            RecalculateAscii(currentIntensity); //Recalcular ASCII con la intensidad actual
+        }
+    } 
 }

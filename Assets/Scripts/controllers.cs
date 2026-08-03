@@ -3,16 +3,27 @@ using UnityEngine.UI;
 
 public class controllers : MonoBehaviour
 {
+    //sliders
     public Slider intensitySlider;
-    public Upload_Image imageLoader; // referencia a tu script principal
+    public Slider resolutionSlider;
+
+    [Space(10)]
+    public Upload_Image imageLoader;
+
 
     void Start()
     {
         intensitySlider.onValueChanged.AddListener(OnIntensityChanged);
+        resolutionSlider.onValueChanged.AddListener(OnResolutionChanged);
     }
 
     void OnIntensityChanged(float value)
     {
         imageLoader.RecalculateAscii(value);
+    }
+
+    void OnResolutionChanged(float value)
+    {
+        imageLoader.RecalculateGrid((int)value);
     }
 }
