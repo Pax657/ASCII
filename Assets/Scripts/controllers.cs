@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -28,6 +27,7 @@ public class controllers : MonoBehaviour
     public Upload_Image imageLoader;
 
     [Space(10)]
+    [Header("Opciones de caracteres")]
     public List<opcionesChar> charsets = new List<opcionesChar>
     {
         new opcionesChar ("ASCII Clásico", "@%#*+=-:. "),
@@ -36,8 +36,15 @@ public class controllers : MonoBehaviour
     };
 
     [Space(10)]
+    [Header("Opciones de fuente")]
     public TextMeshProUGUI asciiDisplay;
     public List<TMP_FontAsset> availableFonts;
+
+    [Header("Debounce")] //Sirve para evitar que se recalculen los valores de la imagen cada vez que se mueve el slider, sino que espera un tiempo para hacerlo
+    public float debounceDelay = 0.15f; //Tiempo de espera en segundos antes de aplicar los cambios
+    private bool hasPendingResolutionChange;
+    private float pendingResolutionValue; //Valor pendiente de resolución para aplicar después del retraso
+    private float resolutionDebounceTimer;
 
     void Start()
     {
@@ -61,6 +68,19 @@ public class controllers : MonoBehaviour
         fontDropdown.onValueChanged.AddListener(OnFontChanged);
     }
 
+    private void Update()
+    {
+        if (hasPendingResolutionChange) //Si tiene un cambio pendiente, espera antes de aplicarlo
+        {
+            resolutionDebounceTimer -= Time.deltaTime;
+            if(resolutionDebounceTimer <= 0) //Cuando se cumple el tiempo de espera, se aplica el cambio de resolución
+            {
+                imageLoader.RecalculateGrid((int)pendingResolutionValue); //Aplica el cambio pendiente de resolución
+                hasPendingResolutionChange = false;
+            }
+        }
+    }
+
     void OnIntensityChanged(float value)
     {
         intensityValueText.text = $"Iluminación: {value:F2}";
@@ -70,7 +90,10 @@ public class controllers : MonoBehaviour
     void OnResolutionChanged(float value)
     {
         resolutionValueText.text = $"Resolución: {(int)value} px";
-        imageLoader.RecalculateGrid((int)value);
+
+        pendingResolutionValue = value; //Almacena el valor pendiente de resolución
+        hasPendingResolutionChange = true;
+        resolutionDebounceTimer = debounceDelay; //Reinicia el temporizador de debounce
     }
 
     void OnASCIIChanged(int index)
