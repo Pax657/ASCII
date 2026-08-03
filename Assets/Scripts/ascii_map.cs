@@ -65,5 +65,20 @@ public static class ascii_map
         return Mathf.Pow(luminance, intensity);
     }
 
+    public static string ReduceDensityLevels(string fullTable, int levels)
+    {
+        if (levels >= fullTable.Length) return fullTable; //no hay nada que reducir
+        if (levels <= 1) return fullTable[0].ToString(); //si hay un solo nivel, devolvemos el primer carácter (el más denso)
+
+        char[] reduced = new char[levels];
+        for (int i = 0; i < levels; i++)
+        {
+            //Distribuye los índices uniformemente a lo largo de la tabla original
+            int sourceIndex = Mathf.RoundToInt(i * (fullTable.Length - 1) / (float)(levels - 1));
+            reduced[i] = fullTable[sourceIndex];
+        }
+
+        return new string(reduced);
+    }
 
 }

@@ -9,7 +9,10 @@ public class Upload_Image : MonoBehaviour
     public AspectRatioFitter aspectFitter;
     public ascii_Renderer asciiRenderer;
 
-    public string currentDensityTable = "@%#*+=-:. ";
+    public string fullDensityTable = "@%#*+=-:. "; //Tabla por defecto para densidad completa
+    public int currentLevels = 10; //Niveles de gris actuales (10 por defecto)
+
+    public string currentDensityTable; //diferenciamos entre la tabla completa y la reducida según los niveles de gris
 
     //valores privados necesarios para cambiar datos sin tener que volver a cargar la imagen
     private Texture2D currentTexture;
@@ -17,6 +20,11 @@ public class Upload_Image : MonoBehaviour
     private int currentColumns;
     private int currentRows;
     private float currentIntensity = 1f;
+
+    private void Awake()
+    {
+        currentDensityTable = fullDensityTable; //Inicializamos la tabla de densidad actual con la completa
+    }
 
     public void OpenExplorer()
     {
@@ -127,10 +135,18 @@ public class Upload_Image : MonoBehaviour
         }
     }
 
-    public void OnCharsetChanged(string newTable)
+    public void OnCharsetChanged(string newFullTable)
     {
-        currentDensityTable = newTable;
+        fullDensityTable = newFullTable;
+        currentDensityTable = ascii_map.ReduceDensityLevels(fullDensityTable, currentLevels);
         RecalculateAscii(currentIntensity); //Recalcular ASCII con la intensidad actual y la nueva tabla de densidad
+    }
+
+    public void OnDensityLevelsChanged(int levels)
+    {
+        currentLevels = levels;
+        currentDensityTable = ascii_map.ReduceDensityLevels(fullDensityTable, levels);
+        RecalculateAscii(currentIntensity);
     }
 
     /*
