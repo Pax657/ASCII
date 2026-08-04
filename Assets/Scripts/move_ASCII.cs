@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class move_Image : MonoBehaviour, IDragHandler, IScrollHandler
+public class move_ASCII : MonoBehaviour, IDragHandler, IScrollHandler
 {
-    public RectTransform text;
+    public RectTransform imageRect;
     public bool panModeEnabled = false;
 
     public float zoomSpeed = 0.1f;
@@ -22,7 +22,7 @@ public class move_Image : MonoBehaviour, IDragHandler, IScrollHandler
         if (!panModeEnabled) return;
 
         //Mueve la imagen al arrastrar el mouse
-        text.anchoredPosition += eventData.delta;
+        imageRect.anchoredPosition += eventData.delta;
 
         ClampPosition();
     }
@@ -33,7 +33,7 @@ public class move_Image : MonoBehaviour, IDragHandler, IScrollHandler
         float scrollDelta = eventData.scrollDelta.y;
         currentZoom = Mathf.Clamp(currentZoom + scrollDelta * zoomSpeed, minZoom, maxZoom);
 
-        text.localScale = new Vector3(currentZoom, currentZoom, 1f);
+        imageRect.localScale = new Vector3(currentZoom, currentZoom, 1f);
 
         ClampPosition();
     }
@@ -41,17 +41,17 @@ public class move_Image : MonoBehaviour, IDragHandler, IScrollHandler
     void ClampPosition()
     {
         //Evita que arrastres la imagen tan lejos que quede un hueco vacío en el viewport
-        RectTransform viewport = text.parent as RectTransform;
+        RectTransform viewport = imageRect.parent as RectTransform;
 
-        float maxX = (text.rect.width * currentZoom - viewport.rect.width) / 2f;
-        float maxY = (text.rect.height * currentZoom - viewport.rect.height) / 2f;
+        float maxX = (imageRect.rect.width * currentZoom - viewport.rect.width) / 2f;
+        float maxY = (imageRect.rect.height * currentZoom - viewport.rect.height) / 2f;
 
         maxX = Mathf.Max(maxX, 0);
         maxY = Mathf.Max(maxY, 0);
 
-        Vector2 pos = text.anchoredPosition;
+        Vector2 pos = imageRect.anchoredPosition;
         pos.x = Mathf.Clamp(pos.x, -maxX, maxX);
         pos.y = Mathf.Clamp(pos.y, -maxY, maxY);
-        text.anchoredPosition = pos;
+        imageRect.anchoredPosition = pos;
     }
 }

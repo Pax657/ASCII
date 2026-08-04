@@ -5252,6 +5252,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1579671134}
   - component: {fileID: 1579671136}
+  - component: {fileID: 1579671139}
   - component: {fileID: 1579671135}
   - component: {fileID: 1579671138}
   - component: {fileID: 1579671137}
@@ -5290,12 +5291,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1579671133}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 54889fba94c028d4d99a78305f8b7041, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ImagePanZoom
-  imageRect: {fileID: 1447103512}
+  text: {fileID: 0}
   panModeEnabled: 0
   zoomSpeed: 0.1
   minZoom: 1
@@ -5352,6 +5353,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1579671133}
   m_CullTransparentMesh: 1
+--- !u!114 &1579671139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1579671133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 024e393621738314abcca191b65c0a78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::move_ASCII
+  imageRect: {fileID: 957865079}
+  panModeEnabled: 0
+  zoomSpeed: 0.1
+  minZoom: 1
+  maxZoom: 4
 --- !u!1 &1601203714
 GameObject:
   m_ObjectHideFlags: 0
@@ -6330,8 +6348,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ImagePanZoom, Assembly-CSharp
+      - m_Target: {fileID: 1579671139}
+        m_TargetAssemblyTypeName: move_ASCII, Assembly-CSharp
         m_MethodName: TogglePanMode
         m_Mode: 1
         m_Arguments:
